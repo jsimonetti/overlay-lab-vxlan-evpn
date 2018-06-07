@@ -1,0 +1,8 @@
+---
+defaults:
+    domain: acme.local
+
+spine:
+    asn: 65000
+leaf:
+    asn: 65xxx

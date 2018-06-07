@@ -1,0 +1,75 @@
+version 15.1X53-D60.4;
+replace:
+system {
+    host-name {{ host }};
+    domain-name {{ domain }};
+    root-authentication {
+        encrypted-password "$1$VarABIj2$69bMxK8kQ/hdkAbUdIiam/"; ## SECRET-DATA
+    }
+    login {
+        user {{ nornir_username }} {
+            uid 2000;
+            class super-user;
+            authentication {
+                encrypted-password "$1$Ikhx6tJQ$mqVYchTlzDh43QmvPweWF0";
+            }                           
+        }                               
+    }
+    services {                          
+        ssh {                           
+            root-login deny;           
+        }                               
+        netconf {                       
+            ssh;                        
+        }                               
+        rest {                          
+            http {                      
+                port 8080;              
+            }                           
+            enable-explorer;            
+        }                               
+    }
+    syslog {                            
+        user * {                        
+            any emergency;              
+        }                               
+        file messages {                 
+            any notice;                 
+            authorization info;         
+        }                               
+        file interactive-commands {     
+            interactive-commands any;   
+        }                               
+    }                                   
+    extensions {                        
+        providers {                     
+            juniper {                   
+                license-type juniper deployment-scope commercial;
+            }                           
+            chef {                      
+                license-type juniper deployment-scope commercial;
+            }                           
+        }                               
+    }     
+}
+
+replace:
+interfaces {                            
+    em0 {
+        unit 0 {
+            family inet {
+                address {{ nornir_host }}/24;
+            }
+        }
+    }
+    em1 {
+        unit 0 {
+            family inet {
+                address 169.254.0.2/24;
+            }
+        }
+    }
+    em2 {
+        description unusable;
+    }
+}

@@ -1,0 +1,18 @@
+---
+interfaces:
+  xe-0/0/0:
+    connects_to: spine-01
+    ipv4: 10.0.0.1/31
+    enabled: true
+  xe-0/0/1:
+    connects_to: spine-02
+    ipv4: 10.0.1.1/31
+    enabled: true
+
+sessions:
+  - ipv4: 10.0.0.0
+    peer_as: 65000
+  - ipv4: 10.0.1.0
+    peer_as: 65000
+
+loopback: 10.255.1.1

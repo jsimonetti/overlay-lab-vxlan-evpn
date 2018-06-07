@@ -1,0 +1,52 @@
+routing-options {
+    router-id {{ underlay.loopback }};
+    autonomous-system {{ asn }};
+    forwarding-table {
+        export load-balance;
+        ecmp-fast-reroute;
+    }
+}
+
+policy-options {
+    replace:
+    policy-statement lo0-export {
+        term lo0 {
+            from {
+                family inet;
+                route-filter 0.0.0.0/0 prefix-length-range /32-/32;
+            }
+            then accept;
+        }
+        term reject {
+            then reject;
+        }
+    }
+    replace:
+    policy-statement load-balance {     
+        term load-balance {             
+            then {                      
+                load-balance per-packet;
+            }                           
+        }                               
+    }      
+}
+
+protocols {
+    bgp {
+        replace:
+        group underlay {
+            type external;
+            export lo0-export;
+            multipath;
+            family inet {
+                unicast;
+            }
+{% for session in underlay.sessions %}
+            neighbor {{ session.ipv4 }} {
+                peer-as {{ session.peer_as }};
+            }
+{% endfor %}
+        }
+    }
+}
+

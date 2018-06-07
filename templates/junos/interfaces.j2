@@ -1,0 +1,23 @@
+interfaces {
+    replace:
+    lo0 {
+        unit 0 {
+            family inet {
+                address {{ underlay.loopback }}/32;
+            }
+        }
+    }
+{% for interface, data in underlay.interfaces.items() %}
+    replace:
+    {{ interface }} {
+       description "link to {{ data.connects_to }}";
+        {{ "disable;" if not data.enabled else "" }}
+        unit 0 {
+            family inet {
+                address {{ data.ipv4 }};
+            }
+        }
+    }
+{% endfor %}
+}
+

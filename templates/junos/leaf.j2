@@ -1,0 +1,72 @@
+protocols {
+    replace:
+    evpn {
+        encapsulation vxlan;
+        extended-vni-list [ {% for vlan in vxlan.vlans %} {{ vlan.vni }} {% endfor %} ];
+        vni-options {
+{% for vlan in vxlan.vlans %}
+            vni {{ vlan.vni }} {
+                vrf-target export target:{{ vlan.vni }}:{{ vlan.vni }};
+            }
+{% endfor %}
+        }                               
+    }
+}
+
+policy-options {
+    replace:
+    policy-statement vrf-imp {
+{% for vlan in vxlan.vlans %}
+        term vxlan{{ vlan.vni }} {
+            from community vxlan{{ vlan.vni }};
+            then accept;
+        }
+{% endfor %}
+        term reject {
+            then reject;
+        }
+    }
+{% for vlan in vxlan.vlans %}
+    replace:
+    community vxlan{{ vlan.vni }} members target:{{ vlan.vni }}:{{ vlan.vni }};
+{% endfor %}
+}
+
+replace:
+switch-options {                        
+    vtep-source-interface lo0.0;        
+    route-distinguisher {{ underlay.loopback }}:65010;
+    vrf-import vrf-imp;                 
+    vrf-target target:9999:9999;        
+}
+        
+replace:                               
+vlans {                                 
+{% for vlan in vxlan.vlans %}
+    vxlan{{ vlan.vni }} {                         
+        vlan-id {{ vlan.id }};                     
+        vxlan {                         
+            vni {{ vlan.vni }};                   
+        }                               
+    }                                   
+{% endfor %}
+}
+
+interfaces {
+    replace:
+{% for access in vxlan.interfaces %}
+    {{ access.name }} {
+        {% if access.description is defined %}
+        description "{{ access.description }}" ;
+	{% endif %}
+        unit 0 {                        
+            family ethernet-switching { 
+                interface-mode {{ access.mode }};  
+                vlan {                  
+                    members [ {% for vlan in access.vlans %} {{ vlan }} {% endfor %} ];
+                }                       
+            }                           
+        }                               
+    } 
+{% endfor %}
+}   

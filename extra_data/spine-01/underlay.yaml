@@ -1,0 +1,25 @@
+---
+interfaces:
+  em3:
+    connects_to: leaf-01
+    ipv4: 10.0.0.0/31
+    enabled: true
+  em4:
+    connects_to: leaf-02
+    ipv4: 10.0.0.2/31
+    enabled: true
+  em5:
+    connects_to: leaf-03
+    ipv4: 10.0.0.4/31
+    enabled: true
+
+
+sessions:
+  - ipv4: 10.0.0.1
+    peer_as: 65101
+  - ipv4: 10.0.0.3
+    peer_as: 65102
+  - ipv4: 10.0.0.5
+    peer_as: 65103
+
+loopback: 10.255.0.1

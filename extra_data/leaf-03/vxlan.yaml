@@ -1,0 +1,11 @@
+---
+vlans:
+  - id: 10
+    vni: 1010
+
+interfaces:
+  - name: xe-0/0/8
+    mode: access
+    description: PC-3
+    vlans:
+      - vxlan1010 

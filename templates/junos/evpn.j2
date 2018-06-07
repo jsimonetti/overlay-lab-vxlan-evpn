@@ -1,0 +1,22 @@
+protocols {
+    bgp {
+        replace:
+        group evpn {
+            multihop {                  
+                ttl 5;
+                no-nexthop-change;
+            }
+            local-address {{ underlay.loopback }};
+            family evpn {
+                signaling;
+            }
+            multipath multiple-as;
+{% for session in evpn.sessions %}
+            neighbor {{ session.ipv4 }} {
+                peer-as {{ session.peer_as }};
+            }
+{% endfor %}
+        }
+    }
+}
+

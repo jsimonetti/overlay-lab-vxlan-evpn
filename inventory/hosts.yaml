@@ -1,0 +1,54 @@
+---
+spine-01:
+    nornir_host: 192.168.1.11
+    nornir_username: vagrant
+    nornir_password: Vagrant
+    role: spine
+    nornir_nos: junos
+    type: network_device
+    groups:
+        - spine
+
+spine-02:
+    nornir_host: 192.168.1.12
+    nornir_username: vagrant
+    nornir_password: Vagrant
+    role: spine
+    nornir_nos: junos
+    type: network_device
+    groups:
+        - spine
+
+leaf-01:
+    nornir_host: 192.168.1.101
+    nornir_username: vagrant
+    nornir_password: Vagrant
+    role: leaf
+    nornir_nos: junos
+    type: network_device
+    groups:
+        - leaf
+    asn: 65101
+
+leaf-02:
+    nornir_host: 192.168.1.102
+    nornir_username: vagrant
+    nornir_password: Vagrant
+    role: leaf
+    nornir_nos: junos
+    type: network_device
+    groups:
+        - leaf
+    asn: 65102
+
+leaf-03:
+    nornir_host: 192.168.1.103
+    nornir_username: vagrant
+    nornir_password: Vagrant
+    role: leaf
+    nornir_nos: junos
+    type: network_device
+    groups:
+        - leaf
+    asn: 65103
+
